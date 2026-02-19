@@ -11,6 +11,9 @@
   "scripts": {
     "build": "tsup"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "fs-extra": "^11.2.0"
   },

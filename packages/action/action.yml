@@ -4,7 +4,7 @@ inputs:
   token:
     description: "GitHub token"
     required: false
-    default: ${{ github.token }}
+    default: ""
 runs:
   using: "node20"
   main: "dist/index.js"

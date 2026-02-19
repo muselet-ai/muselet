@@ -26,15 +26,18 @@ export const contextByType = (
 
   const requiredSections = value[type];
   const missing = requiredSections.filter(
-    (section) => !body || !body.includes(`${section}:`),
+    (section) => !body || !new RegExp(`^${section}:`, "mi").test(body),
   );
 
   const hasContext = missing.length === 0;
   const result = when === "never" ? !hasContext : hasContext;
-  const message =
-    missing.length > 0
-      ? `${type} commits should include: ${missing.join(", ")}`
-      : "";
+
+  let message = "";
+  if (when === "never" && hasContext) {
+    message = `${type} commits should NOT include: ${requiredSections.join(", ")}`;
+  } else if (when === "always" && !hasContext) {
+    message = `${type} commits should include: ${missing.join(", ")}`;
+  }
 
   return [result, message];
 };
