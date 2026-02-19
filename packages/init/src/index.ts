@@ -134,7 +134,7 @@ async function main() {
     plan.push("Add commit-msg hook to existing husky");
   }
   if (!hasCommitlintConfig) {
-    plan.push("Create commitlint.config.js");
+    plan.push("Create commitlint.config.mjs");
   }
   if (!hasWorkflow) {
     plan.push("Create .github/workflows/muselet.yml");
@@ -167,6 +167,11 @@ async function main() {
       s.start("Setting up husky...");
       run(`${installCmd(pm)} husky`);
       run("npx husky init");
+      // Clear the default pre-commit hook (runs `npm test` which fails on fresh projects)
+      const defaultPreCommit = path.join(cwd, ".husky", "pre-commit");
+      if (existsSync(defaultPreCommit)) {
+        await fs.writeFile(defaultPreCommit, "", { mode: 0o755 });
+      }
       s.stop("✅ Husky configured");
     }
 
@@ -181,7 +186,7 @@ async function main() {
     // 4. Commitlint config
     if (!hasCommitlintConfig) {
       s.start("Creating commitlint config...");
-      await fs.writeFile(path.join(cwd, "commitlint.config.js"), commitlintConfig);
+      await fs.writeFile(path.join(cwd, "commitlint.config.mjs"), commitlintConfig);
       s.stop("✅ Commitlint config created");
     } else {
       const overwrite = await confirm({
@@ -195,7 +200,7 @@ async function main() {
       }
       
       if (overwrite) {
-        await fs.writeFile(path.join(cwd, "commitlint.config.js"), commitlintConfig);
+        await fs.writeFile(path.join(cwd, "commitlint.config.mjs"), commitlintConfig);
         log.success("✅ Commitlint config overwritten");
       } else {
         log.info("⊘ Skipped commitlint config");
