@@ -1,8 +1,9 @@
-export const commitlintConfig = `// commitlint.config.js
+export const commitlintConfig = `// commitlint.config.mjs
 export default {
   extends: ["@commitlint/config-conventional"],
   plugins: ["@muselet/commitlint-plugin"],
   rules: {
+    "body-max-line-length": [0],
     "context-by-type": [
       2,
       "always",
