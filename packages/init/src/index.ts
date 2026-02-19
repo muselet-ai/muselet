@@ -15,6 +15,35 @@ import {
 import { commitlintConfig } from "./templates/commitlint-config.js";
 import { agentInstructions } from "./templates/agent-instructions.js";
 
+function bannerLine(text: string, r: number, g: number, b: number, width = 50): string {
+  const pad = Math.max(0, width - text.length);
+  return `\x1b[48;2;${r};${g};${b}m\x1b[97m${text}${" ".repeat(pad)}\x1b[0m`;
+}
+
+function renderBanner(): string {
+  const w = process.stdout.columns || 80;
+  // Gold (#B8860B) → Deep orange (#CC5500) gradient, 7 rows
+  const colors: [number, number, number][] = [
+    [184, 134, 11],
+    [180, 120, 10],
+    [190, 110, 8],
+    [195, 100, 6],
+    [200, 90, 4],
+    [205, 80, 2],
+    [204, 85, 0],
+  ];
+  const lines = [
+    "",
+    "  🍾  muselet",
+    "",
+    "  Convention-enforced commit context.",
+    "  The wire cage that keeps your commits corked.",
+    "",
+    "",
+  ];
+  return lines.map((l, i) => bannerLine(l, ...colors[i], w)).join("\n");
+}
+
 const cwd = process.cwd();
 
 type PackageManager = "pnpm" | "yarn" | "npm";
@@ -74,7 +103,8 @@ function run(cmd: string): void {
 }
 
 async function main() {
-  intro("🧵 Welcome to muselet init");
+  console.log(renderBanner());
+  intro("muselet init");
 
   // Detect environment
   const pm = detectPackageManager();
@@ -86,11 +116,12 @@ async function main() {
   const hasWorkflow = existsSync(path.join(cwd, ".github", "workflows", "muselet.yml"));
 
   // Show detection info
-  log.info("Environment detected:");
-  log.step(`Package Manager: ${pm} (from ${pm === "pnpm" ? "pnpm-lock.yaml" : pm === "yarn" ? "yarn.lock" : "package.json"})`);
-  if (hasHusky) log.step("✓ Husky already installed");
-  if (hasCommitlintConfig) log.step("✓ Commitlint config already exists");
-  if (hasWorkflow) log.step("✓ Muselet workflow already exists");
+  const detected: string[] = [];
+  detected.push(`Package Manager: ${pm} (from ${pm === "pnpm" ? "pnpm-lock.yaml" : pm === "yarn" ? "yarn.lock" : "package.json"})`);
+  if (hasHusky) detected.push("✓ Husky already installed");
+  if (hasCommitlintConfig) detected.push("✓ Commitlint config exists");
+  if (hasWorkflow) detected.push("✓ Muselet workflow exists");
+  note(detected.join("\n"), "Environment");
 
   // Build plan
   const deps = ["@commitlint/cli", "@commitlint/config-conventional", "@muselet/commitlint-plugin"];
@@ -110,10 +141,7 @@ async function main() {
   }
   plan.push("Create muselet.md (agent instructions)");
 
-  log.info("Planned actions:");
-  for (const step of plan) {
-    log.step(`• ${step}`);
-  }
+  note(plan.map(s => `• ${s}`).join("\n"), "Plan");
 
   const proceed = await confirm({
     message: "Proceed with setup?",
