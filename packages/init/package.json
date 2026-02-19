@@ -1,0 +1,22 @@
+{
+  "name": "@muselet/init",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "muselet-init": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,10 @@
+name: "muselet"
+description: "Lint commit messages for context (why, not just what)"
+inputs:
+  token:
+    description: "GitHub token"
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: "node20"
+  main: "dist/index.js"
