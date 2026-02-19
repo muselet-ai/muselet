@@ -3,7 +3,6 @@ export default {
   extends: ["@commitlint/config-conventional"],
   plugins: ["@muselet/commitlint-plugin"],
   rules: {
-    "body-max-line-length": [0],
     "context-by-type": [
       2,
       "always",

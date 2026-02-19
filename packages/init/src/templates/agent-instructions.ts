@@ -32,4 +32,16 @@ on the /profile endpoint (~12/day in production).
 ## Types Without Context Requirements
 
 \\\`docs\\\`, \\\`chore\\\`, \\\`ci\\\`, \\\`style\\\`, \\\`test\\\` — no additional context required.
+
+## Config
+
+Our \\\`commitlint.config.mjs\\\` extends \\\`@commitlint/config-conventional\\\`, which enforces
+standard rules like \\\`body-max-line-length\\\` (100 chars). If your context sections need
+longer lines, you can override it:
+
+\\\`\\\`\\\`js
+rules: {
+  "body-max-line-length": [0], // disable
+}
+\\\`\\\`\\\`
 `;
