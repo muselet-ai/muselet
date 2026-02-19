@@ -66,13 +66,32 @@ describe("context-by-type", () => {
   });
 
   describe("when = 'never'", () => {
-    it("fails when sections ARE present", () => {
-      const [valid] = contextByType(commit({ body: "Why: reasons" }), "never");
+    it("fails with message when sections ARE present", () => {
+      const [valid, msg] = contextByType(commit({ body: "Why: reasons" }), "never");
       expect(valid).toBe(false);
+      expect(msg).toBe("fix commits should NOT include: Why");
     });
 
     it("passes when sections are missing", () => {
-      const [valid] = contextByType(commit({ body: "no sections" }), "never");
+      const [valid, msg] = contextByType(commit({ body: "no sections" }), "never");
+      expect(valid).toBe(true);
+      expect(msg).toBe("");
+    });
+  });
+
+  describe("section matching", () => {
+    it("matches section at start of line", () => {
+      const [valid] = contextByType(commit({ body: "Some intro\nWhy: reasons" }));
+      expect(valid).toBe(true);
+    });
+
+    it("does not match section mid-line", () => {
+      const [valid] = contextByType(commit({ body: "Here's Why: reasons" }));
+      expect(valid).toBe(false);
+    });
+
+    it("matches case-insensitively", () => {
+      const [valid] = contextByType(commit({ body: "why: reasons" }));
       expect(valid).toBe(true);
     });
   });

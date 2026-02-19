@@ -2,11 +2,12 @@
   "name": "@muselet/commitlint-plugin",
   "version": "0.1.0",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -16,10 +17,13 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@commitlint/lint": ">=7.6.0"
+    "@commitlint/cli": ">=17.0.0"
   },
   "peerDependenciesMeta": {
-    "@commitlint/lint": { "optional": true }
+    "@commitlint/cli": { "optional": true }
+  },
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
