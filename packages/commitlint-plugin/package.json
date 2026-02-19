@@ -23,7 +23,7 @@
     "@commitlint/cli": { "optional": true }
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
