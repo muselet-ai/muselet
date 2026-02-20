@@ -1,0 +1,42 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+<DocsLayout title="The replay test — Muselet">
+  <h1 class="text-3xl font-bold tracking-tight">The replay test</h1>
+
+  <p class="mt-6 text-text-muted">
+    The replay test is simple: <strong class="text-text">could someone recreate your reasoning from just the commit message?</strong> Not the code — the <em>why</em>, the approach, and the context behind the change.
+  </p>
+
+  <h2 class="text-xl font-bold text-amber mt-12">The research</h2>
+  <p class="mt-4 text-text-muted text-sm">
+    We analyzed <strong class="text-text">2,271 commits</strong> from AI coding agents across real-world repositories. The results:
+  </p>
+
+  <div class="mt-6 space-y-3 text-sm">
+    <div class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+      <span class="text-text">Claude Code</span>
+      <span class="font-mono text-amber">28% pass</span>
+    </div>
+    <div class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+      <span class="text-text">Cursor</span>
+      <span class="font-mono text-amber">17% pass</span>
+    </div>
+    <div class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+      <span class="text-text">Copilot Agent</span>
+      <span class="font-mono text-amber">14% pass</span>
+    </div>
+  </div>
+
+  <p class="mt-6 text-text-muted text-sm">
+    A "strong pass" means the commit message included <strong class="text-text">why</strong>, <strong class="text-text">approach</strong>, and <strong class="text-text">context</strong> — the three elements needed to understand a change without reading the diff.
+  </p>
+
+  <h2 class="text-xl font-bold text-amber mt-12">The problem</h2>
+  <p class="mt-4 text-text-muted text-sm">
+    None of the agents write structured <em>why</em> by default. They describe <em>what</em> changed — which you can already see in the diff — but not <em>why</em> it changed, what was considered, or what tradeoffs were made.
+  </p>
+  <p class="mt-4 text-text-muted text-sm">
+    Muselet fixes this by giving agents a clear format and validating it at commit time.
+  </p>
+</DocsLayout>

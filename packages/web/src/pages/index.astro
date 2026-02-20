@@ -1,0 +1,259 @@
+---
+import Base from '../layouts/Base.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import StatCard from '../components/StatCard.astro';
+---
+<Base title="Muselet — Your commits should explain themselves">
+  <!-- Hero -->
+  <section class="relative px-6 pt-24 pb-20">
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5f5f5 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <div class="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Left: text + CTA -->
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+          Every commit is an <span class="text-amber">Architecture Decision Record.</span>
+        </h1>
+        <p class="mt-6 text-lg text-text-muted leading-relaxed">
+          Muselet is a commitlint plugin that enforces structured context sections in commit messages — why, approach, alternatives, tradeoffs — so every decision is captured where it happened.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row items-start gap-4">
+          <code class="px-4 py-3 bg-surface border border-border rounded-lg font-mono text-sm text-amber">npx @muselet/init</code>
+          <a href="/docs" class="text-sm font-medium text-amber hover:underline self-center">Get started →</a>
+        </div>
+      </div>
+      <!-- Right: demo GIF -->
+      <div class="hidden lg:block">
+        <img
+          src="/muselet-demo.gif"
+          alt="muselet init demo"
+          class="w-full rounded-lg border border-border shadow-2xl"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Replay Test -->
+  <section class="px-6 py-20 border-t border-border">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tight">The Replay Test</h2>
+      <p class="mt-4 text-text-muted max-w-2xl">
+        We scored 2,271 commit messages from AI coding tools on The Replay Test: could you reproduce the intent from the message alone? Strong pass = why + approach + context.
+      </p>
+      <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard label="Claude" value="28%" />
+        <StatCard label="Cursor" value="17%" />
+        <StatCard label="Copilot Agent" value="14%" />
+      </div>
+      <p class="mt-8 text-text-muted">
+        None write structured <em>why</em>. <span class="text-text font-medium">Muselet fixes that.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="px-6 py-20 border-t border-border">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tight">How it works</h2>
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <div class="text-amber font-mono text-xl mb-2">01</div>
+          <h3 class="font-semibold text-xl  mb-2">Install</h3>
+          <p class="text-sm text-text-muted"><code class="text-amber">npx @muselet/init</code> scaffolds commitlint config, husky hook, and agent instructions.</p>
+        </div>
+        <div>
+          <div class="text-amber font-mono text-xl mb-2">02</div>
+          <h3 class="font-semibold text-xl mb-2">Lint</h3>
+          <p class="text-sm text-text-muted">Agent hits lint error → reads convention → writes proper message with context sections.</p>
+        </div>
+        <div>
+          <div class="text-amber font-mono text-xl mb-2">03</div>
+          <h3 class="font-semibold text-xl mb-2">Replay</h3>
+          <p class="text-sm text-text-muted">Every commit becomes a replayable decision record. Context preserved forever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="px-6 py-24 border-t border-border">
+    <div class="max-w-3xl mx-auto text-center">
+      <blockquote class="text-2xl md:text-3xl font-bold tracking-tight leading-snug">
+        A commit should work like a <span class="text-amber">database migration</span>, <br/> but for <span class="text-amber">decisions.</span>
+      </blockquote>
+      <p class="mt-6 text-text-muted leading-relaxed">
+        A migration doesn't just say "changed the schema." It encodes context, intent, and consequences — so it can be replayed anytime. Your commits should do the same. When an agent rewrites your app in a new framework or language, diffs show the mechanical changes — but without the reasoning, it can't tell a deliberate choice from a quick hack.
+      </p>
+      <div class="mt-8 flex items-center justify-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-amber/20 border border-amber/30 flex items-center justify-center text-amber font-bold text-sm">JB</div>
+        <div class="text-left">
+          <div class="text-sm font-semibold text-text">Jonathan Blanchet</div>
+          <div class="text-xs text-text-muted">Author of Muselet</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before / After scenarios -->
+  <section class="px-6 py-20 border-t border-border">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tight">Every workflow. Covered.</h2>
+      <p class="mt-4 text-text-muted max-w-2xl">Whether you commit by hand, pair with an AI, or let agents fly solo — Muselet enforces structured context every time.</p>
+
+      <div class="mt-10 grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8">
+        <!-- Left: scenario tabs -->
+        <div class="flex lg:flex-col gap-2">
+          <button data-scenario="human" class="scenario-tab active text-left px-4 py-3 rounded-lg border border-border text-sm transition-colors">
+            <div class="font-semibold text-text">Human</div>
+            <div class="text-text-muted text-xs mt-0.5 hidden lg:block">Manual commits from developers</div>
+          </button>
+          <button data-scenario="coauthored" class="scenario-tab text-left px-4 py-3 rounded-lg border border-border text-sm transition-colors">
+            <div class="font-semibold text-text">Co-authored</div>
+            <div class="text-text-muted text-xs mt-0.5 hidden lg:block">Human + AI pair programming</div>
+          </button>
+          <button data-scenario="agentic" class="scenario-tab text-left px-4 py-3 rounded-lg border border-border text-sm transition-colors">
+            <div class="font-semibold text-text">Fully Agentic</div>
+            <div class="text-text-muted text-xs mt-0.5 hidden lg:block">Autonomous AI coding agents</div>
+          </button>
+        </div>
+
+        <!-- Right: before/after code blocks -->
+        <div class="space-y-4">
+          <!-- Human -->
+          <div data-panel="human" class="scenario-panel grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs font-medium text-text-muted mb-2">Before</div>
+              <div class="rounded-lg border border-border bg-surface overflow-hidden">
+                <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">git commit</div>
+                <pre class="p-4 text-sm font-mono text-text overflow-x-auto leading-relaxed max-h-72 overflow-y-auto">fix: handle null user in dashboard</pre>
+              </div>
+            </div>
+            <div>
+              <div class="text-xs font-medium text-amber mb-2">With Muselet</div>
+              <div class="rounded-lg border border-border bg-surface overflow-hidden">
+                <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">git commit</div>
+                <pre class="p-4 text-sm font-mono text-text overflow-x-auto leading-relaxed max-h-72 overflow-y-auto">fix: handle null user in dashboard
+
+### Why
+Crash reported in Sentry — users hitting the
+dashboard before profile hydration completes.
+
+### Cause
+Race condition: the React query fires before
+the auth context is populated on hard refresh.
+
+### Approach
+Optional chaining + skeleton fallback until
+user object is available. No loading spinner.</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Co-authored -->
+          <div data-panel="coauthored" class="scenario-panel hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs font-medium text-text-muted mb-2">Before</div>
+              <div class="rounded-lg border border-border bg-surface overflow-hidden">
+                <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">git commit</div>
+                <pre class="p-4 text-sm font-mono text-text overflow-x-auto leading-relaxed max-h-72 overflow-y-auto">refactor: extract auth into middleware layer
+
+Moved JWT verification logic from individual
+route handlers into a shared Express middleware.
+Updated all 12 route files to use the new
+middleware instead of inline auth checks.
+
+Co-authored-by: cursor &lt;noreply@cursor.com&gt;</pre>
+              </div>
+            </div>
+            <div>
+              <div class="text-xs font-medium text-amber mb-2">With Muselet</div>
+              <div class="rounded-lg border border-border bg-surface overflow-hidden">
+                <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">git commit</div>
+                <pre class="p-4 text-sm font-mono text-text overflow-x-auto leading-relaxed max-h-72 overflow-y-auto">refactor: extract auth into middleware layer
+
+### Why
+Auth logic was duplicated across 12 route handlers.
+When the JWT verification logic changed, we had to
+update it in every handler — and missed two.
+
+### Approach
+Express middleware that validates JWT and attaches
+the decoded user to req.user before route handlers.
+
+### Alternatives
+Decorator pattern, but Express doesn't support
+decorators natively and the team isn't using
+TS decorators.
+
+Co-authored-by: cursor &lt;noreply@cursor.com&gt;</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fully Agentic -->
+          <div data-panel="agentic" class="scenario-panel hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs font-medium text-text-muted mb-2">Before</div>
+              <div class="rounded-lg border border-border bg-surface overflow-hidden">
+                <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">git commit</div>
+                <pre class="p-4 text-sm font-mono text-text overflow-x-auto leading-relaxed max-h-72 overflow-y-auto">feat: add rate limiting to API endpoints</pre>
+              </div>
+            </div>
+            <div>
+              <div class="text-xs font-medium text-amber mb-2">With Muselet</div>
+              <div class="rounded-lg border border-border bg-surface overflow-hidden">
+                <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">git commit</div>
+                <pre class="p-4 text-sm font-mono text-text overflow-x-auto leading-relaxed max-h-72 overflow-y-auto">feat: add rate limiting to API endpoints
+
+### Why
+Public API has no rate limiting. A single client
+can exhaust the connection pool and take down
+the service for everyone.
+
+### Approach
+Token bucket algorithm via express-rate-limit.
+100 req/min per IP, 429 response with Retry-After.
+
+### Tradeoffs
+Per-IP limiting won't catch distributed abuse.
+Acceptable for now — can add fingerprinting later.
+
+### Metrics
+p99 latency overhead: &lt;2ms per request.
+Memory: ~50 bytes per tracked IP.</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('.scenario-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const scenario = tab.getAttribute('data-scenario');
+          // Update tabs
+          document.querySelectorAll('.scenario-tab').forEach(t => {
+            t.classList.remove('active', 'bg-surface', 'border-amber');
+            t.classList.add('border-border');
+          });
+          tab.classList.add('active', 'bg-surface', 'border-amber');
+          tab.classList.remove('border-border');
+          // Update panels
+          document.querySelectorAll('.scenario-panel').forEach(p => p.classList.add('hidden'));
+          document.querySelector(`[data-panel="${scenario}"]`)?.classList.remove('hidden');
+        });
+      });
+      // Set initial active state
+      document.querySelector('.scenario-tab.active')?.classList.add('bg-surface', 'border-amber');
+      document.querySelector('.scenario-tab.active')?.classList.remove('border-border');
+    </script>
+  </section>
+
+  <!-- Footer -->
+  <footer class="px-6 py-10 border-t border-border text-center text-sm text-text-muted">
+    <a href="https://github.com/muselet-ai/muselet" target="_blank" rel="noopener" class="hover:text-text">GitHub</a>
+    <span class="mx-2">·</span>
+    <span>MIT License</span>
+  </footer>
+</Base>

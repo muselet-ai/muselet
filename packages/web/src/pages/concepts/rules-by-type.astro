@@ -1,0 +1,32 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+<DocsLayout title="Rules by type — Muselet">
+  <h1 class="text-3xl font-bold tracking-tight">Rules by commit type</h1>
+
+  <p class="mt-6 text-text-muted">
+    Different commit types need different context. A bug fix should explain the root cause; a performance change should include metrics. Here are the default required and recommended sections per type.
+  </p>
+
+  <div class="mt-8 border border-border rounded-lg overflow-hidden text-sm">
+    <table class="w-full">
+      <thead class="bg-surface text-left">
+        <tr>
+          <th class="px-4 py-2 font-medium">Type</th>
+          <th class="px-4 py-2 font-medium">Required</th>
+          <th class="px-4 py-2 font-medium">Recommended</th>
+        </tr>
+      </thead>
+      <tbody class="text-text-muted">
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono">fix</td><td class="px-4 py-2">Why, Cause</td><td class="px-4 py-2">Covers</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono">feat</td><td class="px-4 py-2">Why</td><td class="px-4 py-2">Approach, Alternatives</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono">refactor</td><td class="px-4 py-2">Why, Approach</td><td class="px-4 py-2">Alternatives, Invariants</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono">perf</td><td class="px-4 py-2">Why, Metrics</td><td class="px-4 py-2">Approach, Tradeoffs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-6 text-text-muted text-sm">
+    These defaults can be customized in your <a href="/guides/configuration" class="text-amber hover:underline">commitlint config</a>.
+  </p>
+</DocsLayout>

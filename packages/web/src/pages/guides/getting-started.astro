@@ -1,0 +1,30 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+<DocsLayout title="Getting started — Muselet">
+  <h1 class="text-3xl font-bold tracking-tight">Getting started</h1>
+
+  <p class="mt-6 text-text-muted">Run the init command in your project root:</p>
+
+  <div class="mt-4">
+    <CodeBlock>npx @muselet/init</CodeBlock>
+  </div>
+
+  <p class="mt-6 text-text-muted">This will:</p>
+  <ul class="mt-2 text-text-muted text-sm space-y-1 list-disc list-inside">
+    <li>Install the <code class="text-amber font-mono">@muselet/commitlint-plugin</code> package</li>
+    <li>Create a <code class="text-amber font-mono">commitlint.config.mjs</code></li>
+    <li>Set up a husky commit-msg hook</li>
+    <li>Generate <code class="text-amber font-mono">muselet.md</code> agent instructions</li>
+    <li>Optionally add a GitHub Action for CI</li>
+  </ul>
+
+  <h2 class="text-xl font-bold text-amber mt-12">What happens next</h2>
+  <p class="mt-4 text-text-muted text-sm">
+    Once set up, every commit message will be validated against muselet's rules. Your AI coding agents will read <code class="text-amber font-mono">muselet.md</code> and write structured commit messages automatically.
+  </p>
+  <p class="mt-4 text-text-muted text-sm">
+    Next: <a href="/guides/configuration" class="text-amber hover:underline">configure your rules</a> or learn about <a href="/guides/agent-setup" class="text-amber hover:underline">agent setup</a>.
+  </p>
+</DocsLayout>

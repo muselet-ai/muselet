@@ -1,0 +1,13 @@
+---
+const current = Astro.url.pathname;
+---
+<div class="border-b border-border">
+<nav class="py-4 flex items-center justify-between max-w-6xl mx-auto">
+  <a href="/" class="font-mono font-bold text-amber text-lg tracking-tight">Muselet</a>
+  <div class="flex gap-6 text-sm text-text-muted">
+    <a href="/guides/getting-started" class:list={["hover:text-text transition-colors", { "text-text": current.startsWith("/guides") }]}>Guides</a>
+    <a href="/concepts/replay-test" class:list={["hover:text-text transition-colors", { "text-text": current.startsWith("/concepts") }]}>Concepts</a>
+    <!-- <a href="https://github.com/muselet-ai/muselet" target="_blank" rel="noopener" class="hover:text-text transition-colors">GitHub</a> -->
+  </div>
+</nav>
+</div>

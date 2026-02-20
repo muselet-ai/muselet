@@ -1,0 +1,34 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+<DocsLayout title="Context sections — Muselet">
+  <h1 class="text-3xl font-bold tracking-tight">Context sections</h1>
+
+  <p class="mt-6 text-text-muted">
+    Sections are written as <code class="text-amber font-mono">### SectionName</code> in the commit body. There are 11 sections, each capturing a specific piece of context.
+  </p>
+
+  <div class="mt-8 border border-border rounded-lg overflow-hidden text-sm">
+    <table class="w-full">
+      <thead class="bg-surface text-left">
+        <tr>
+          <th class="px-4 py-2 font-medium">Section</th>
+          <th class="px-4 py-2 font-medium">Description</th>
+        </tr>
+      </thead>
+      <tbody class="text-text-muted">
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Why</td><td class="px-4 py-2">Why this change was necessary</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Cause</td><td class="px-4 py-2">Root cause of the issue being fixed</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Approach</td><td class="px-4 py-2">How the solution works</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Alternatives</td><td class="px-4 py-2">Other approaches that were considered</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Tradeoffs</td><td class="px-4 py-2">What was traded off or accepted</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Metrics</td><td class="px-4 py-2">Performance or size impact numbers</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Invariants</td><td class="px-4 py-2">Properties that must remain true</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Migration</td><td class="px-4 py-2">Steps needed to migrate existing code/data</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Covers</td><td class="px-4 py-2">What the tests cover (or don't)</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Breaking</td><td class="px-4 py-2">Breaking changes and who is affected</td></tr>
+        <tr class="border-t border-border"><td class="px-4 py-2 font-mono text-amber">Refs</td><td class="px-4 py-2">Links to issues, PRs, docs, or discussions</td></tr>
+      </tbody>
+    </table>
+  </div>
+</DocsLayout>
