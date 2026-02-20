@@ -5,3 +5,4 @@ dist/
 .vercel
 packages/web/.DS_Store
 packages/web/.astro/
+packages/.DS_Store
