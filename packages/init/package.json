@@ -7,7 +7,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup"
   },
@@ -15,6 +17,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@clack/prompts": "^1.0.1",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
