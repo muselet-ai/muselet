@@ -1,4 +1,4 @@
-import type { RuleValue, SectionConfig } from "../../../commitlint-plugin/src/rules/context-by-type.js";
+import type { RuleValue, SectionConfig } from "@muselet/commitlint-plugin";
 
 function serializeRuleValue(rules: RuleValue): string {
   const entries = Object.entries(rules).map(([type, config]) => {
