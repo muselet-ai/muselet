@@ -1,0 +1,103 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+const current = Astro.url.pathname;
+
+const guides = [
+  { href: '/guides/getting-started', label: 'Getting started' },
+  { href: '/guides/configuration', label: 'Configuration' },
+  { href: '/guides/agent-setup', label: 'Agent setup' },
+];
+
+const concepts = [
+  { href: '/concepts/replay-test', label: 'The replay test' },
+  { href: '/concepts/context-sections', label: 'Context sections' },
+  { href: '/concepts/rules-by-type', label: 'Rules by type' },
+];
+
+function isActive(href: string) {
+  return current === href || current === href + '/';
+}
+---
+<Base title={title}>
+  <div class="flex min-h-[calc(100vh-57px)]">
+    <!-- Mobile toggle -->
+    <button
+      id="sidebar-toggle"
+      class="fixed bottom-4 right-4 z-50 lg:hidden bg-surface border border-border rounded-lg p-3 text-text-muted hover:text-text transition-colors"
+      aria-label="Toggle sidebar"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="fixed inset-0 z-40 bg-bg/95 backdrop-blur-sm p-6 pt-20 -translate-x-full transition-transform lg:translate-x-0 lg:static lg:bg-transparent lg:backdrop-blur-none lg:p-0 lg:pt-0 lg:w-64 lg:min-w-[16rem] lg:shrink-0"
+    >
+      <nav class="lg:sticky lg:top-0 lg:pt-8 lg:pb-8 lg:pl-8 lg:pr-6 lg:border-r lg:border-border lg:h-screen lg:overflow-y-auto space-y-6 text-sm">
+        <div>
+          <div class="font-medium text-text mb-2">Guides</div>
+          <ul class="space-y-1">
+            {guides.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class:list={[
+                    "block px-3 py-1.5 rounded transition-colors",
+                    isActive(href) ? "text-amber bg-surface" : "text-text-muted hover:text-text"
+                  ]}
+                >{label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <div class="font-medium text-text mb-2">Concepts</div>
+          <ul class="space-y-1">
+            {concepts.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class:list={[
+                    "block px-3 py-1.5 rounded transition-colors",
+                    isActive(href) ? "text-amber bg-surface" : "text-text-muted hover:text-text"
+                  ]}
+                >{label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <main class="flex-1 min-w-0 px-6 py-8 lg:pl-12 lg:py-12">
+      <article class="max-w-3xl prose-docs">
+        <slot />
+      </article>
+    </main>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    toggle?.addEventListener('click', () => {
+      sidebar?.classList.toggle('-translate-x-full');
+    });
+    // Close sidebar on link click (mobile)
+    sidebar?.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          sidebar?.classList.add('-translate-x-full');
+        }
+      });
+    });
+  </script>
+</Base>

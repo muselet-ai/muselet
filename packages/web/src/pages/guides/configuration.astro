@@ -1,0 +1,44 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+<DocsLayout title="Configuration — Muselet">
+  <h1 class="text-3xl font-bold tracking-tight">Configuration</h1>
+
+  <p class="mt-6 text-text-muted">
+    The init command creates a <code class="text-amber font-mono">commitlint.config.mjs</code> in your project root.
+  </p>
+
+  <h2 class="text-xl font-bold text-amber mt-12">Default config</h2>
+  <div class="mt-4">
+    <CodeBlock title="commitlint.config.mjs">
+{`import { museletPlugin, museletRules } from '@muselet/commitlint-plugin';
+
+export default {
+  plugins: [museletPlugin],
+  rules: {
+    ...museletRules,
+  },
+};`}
+    </CodeBlock>
+  </div>
+
+  <h2 class="text-xl font-bold text-amber mt-12">Custom rules</h2>
+  <p class="mt-4 text-text-muted text-sm">
+    You can override individual rules by spreading <code class="text-amber font-mono">museletRules</code> and replacing specific entries:
+  </p>
+  <div class="mt-4">
+    <CodeBlock title="commitlint.config.mjs">
+{`import { museletPlugin, museletRules } from '@muselet/commitlint-plugin';
+
+export default {
+  plugins: [museletPlugin],
+  rules: {
+    ...museletRules,
+    // Make "Metrics" required for perf commits
+    'muselet-perf-sections': [2, 'always', { required: ['Why', 'Metrics', 'Approach'] }],
+  },
+};`}
+    </CodeBlock>
+  </div>
+</DocsLayout>

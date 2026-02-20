@@ -1,0 +1,33 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+<DocsLayout title="Agent setup — Muselet">
+  <h1 class="text-3xl font-bold tracking-tight">Agent setup</h1>
+
+  <p class="mt-6 text-text-muted">
+    The init command generates a <code class="text-amber font-mono">muselet.md</code> file in your repo root. This file is designed to be read by AI coding agents (Claude, Copilot, Codex, etc.) and tells them:
+  </p>
+  <ul class="mt-2 text-text-muted text-sm space-y-1 list-disc list-inside">
+    <li>The commit message format and required sections</li>
+    <li>Which sections apply to which commit types</li>
+    <li>Examples of well-structured commit messages</li>
+    <li>How to handle the lint error when they forget</li>
+  </ul>
+
+  <h2 class="text-xl font-bold text-amber mt-12">How agents discover it</h2>
+  <p class="mt-4 text-text-muted text-sm">
+    Most agents will read <code class="text-amber font-mono">muselet.md</code> automatically if it's in the project root or referenced in your agent config.
+  </p>
+  <p class="mt-4 text-text-muted text-sm">
+    For agents that use a specific instructions file (like <code class="text-amber font-mono">AGENTS.md</code>, <code class="text-amber font-mono">.cursorrules</code>, or <code class="text-amber font-mono">CLAUDE.md</code>), you can reference it:
+  </p>
+  <div class="mt-4">
+    <CodeBlock>Read muselet.md for commit message conventions.</CodeBlock>
+  </div>
+
+  <h2 class="text-xl font-bold text-amber mt-12">What it contains</h2>
+  <p class="mt-4 text-text-muted text-sm">
+    The generated file includes the full section reference, required sections per commit type, and example commit messages. It's designed to be self-contained — agents don't need to look anything else up.
+  </p>
+</DocsLayout>

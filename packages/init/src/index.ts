@@ -20,7 +20,7 @@ import {
   DEFAULT_VALUE,
   type RuleValue,
   type SectionConfig,
-} from "../../commitlint-plugin/src/rules/context-by-type.js";
+} from "@muselet/commitlint-plugin";
 
 function bannerLine(text: string, r: number, g: number, b: number, width = 50): string {
   const pad = Math.max(0, width - text.length);
