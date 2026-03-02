@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.0.1",
-    "@muselet/commitlint-plugin": "^0.2.0",
+    "@muselet/commitlint-plugin": "workspace:*",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
