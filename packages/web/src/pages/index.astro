@@ -14,7 +14,7 @@ import StatCard from '../components/StatCard.astro';
           Muselet is your <span class="text-amber">decision capture toolkit.</span>
         </h1>
         <p class="mt-6 text-lg text-text-muted leading-relaxed">
-          Muselet helps teams preserve engineering decisions across commits and pull requests. One setup command gives you two features: structured commit context with commitlint, and GitHub PR Decision Card checks before merge.
+          Muselet helps teams preserve engineering decisions across commits and pull requests, with guardrails that stay fast enough for daily developer flow.
         </p>
         <div class="mt-10 flex flex-col md:flex-row  items-center gap-4">
           <code class="px-4 py-3 bg-surface border border-border rounded-lg font-mono text-sm text-amber">npx @muselet/init</code>
@@ -51,71 +51,52 @@ import StatCard from '../components/StatCard.astro';
     </div>
   </section>
 
-  <!-- Product framing -->
+  <!-- Product value -->
+  <section class="px-6 py-20 border-t border-border">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">Built for teams shipping with AI</h2>
+        <p class="mt-4 text-text-muted max-w-2xl">Muselet keeps decision quality high from local commits to PR review. It gives developers guardrails that still feel fast, not bureaucratic.</p>
+        <div class="mt-8 space-y-4">
+          <div class="rounded-lg border border-border bg-surface p-4">
+            <h3 class="font-semibold text-text">Commit context that survives rewrites</h3>
+            <p class="mt-1 text-sm text-text-muted">Context-by-type rules enforce the reasoning behind changes, so future humans and agents can replay decisions without digging through diffs.</p>
+          </div>
+          <div class="rounded-lg border border-border bg-surface p-4">
+            <h3 class="font-semibold text-text">PR decisions that are explicit before merge</h3>
+            <p class="mt-1 text-sm text-text-muted">Decision Cards keep tradeoffs visible in pull requests, with optional GitHub checks to prevent "LGTM but why?" merges.</p>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-xl border border-border bg-surface p-6">
+        <div class="text-xs uppercase tracking-wider text-text-muted">Developer experience</div>
+        <ul class="mt-4 space-y-3 text-sm text-text-muted">
+          <li><span class="text-amber">●</span> Works with human commits and autonomous coding agents</li>
+          <li><span class="text-amber">●</span> Fails fast with actionable messages, not vague policy docs</li>
+          <li><span class="text-amber">●</span> Keeps commit history and PR descriptions aligned</li>
+          <li><span class="text-amber">●</span> Opt into merge gates only when your team is ready</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commit to PR flow -->
   <section class="px-6 py-20 border-t border-border">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-2xl font-bold tracking-tight">One tool. Two features.</h2>
-      <p class="mt-4 text-text-muted max-w-3xl">Run <code class="text-amber">npx @muselet/init</code> once. Keep decisions visible at both layers: commit history and PR discussion.</p>
+      <h2 class="text-2xl font-bold tracking-tight">From commit intent to merge confidence</h2>
+      <p class="mt-4 text-text-muted max-w-3xl">Muselet helps at two key moments in the developer workflow: writing code history and finalizing pull requests.</p>
       <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="rounded-xl border border-border bg-surface p-6">
-          <div class="text-amber font-mono text-sm mb-3">Feature 01</div>
+          <div class="text-amber font-mono text-sm mb-3">In your repo</div>
           <h3 class="font-semibold text-xl mb-2">Commitlint context plugin</h3>
-          <p class="text-sm text-text-muted">Enforce structured commit sections by type (Why, Approach, Alternatives, etc.) so every commit carries replayable intent.</p>
+          <p class="text-sm text-text-muted">Enforces structured commit sections like Why, Cause, Approach, Alternatives, and Metrics based on commit type.</p>
+          <p class="mt-3 text-sm text-text-muted">Result: commit history becomes durable engineering memory, not just a sequence of file operations.</p>
         </div>
         <div class="rounded-xl border border-border bg-surface p-6">
-          <div class="text-amber font-mono text-sm mb-3">Feature 02</div>
-          <h3 class="font-semibold text-xl mb-2">GitHub PR Decision Card checks</h3>
-          <p class="text-sm text-text-muted">Add a Decision Card template in PR descriptions and optionally block merge when it is missing or still draft.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Commitlint section -->
-  <section class="px-6 py-20 border-t border-border">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-2xl font-bold tracking-tight">Section 1 — Commitlint plugin</h2>
-      <p class="mt-4 text-text-muted max-w-3xl">Muselet adds commit rules that work with humans and coding agents. If context is missing, commits fail fast with actionable feedback.</p>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <div class="text-amber font-mono text-xl mb-2">01</div>
-          <h3 class="font-semibold text-xl mb-2">Install</h3>
-          <p class="text-sm text-text-muted">Scaffold commitlint config, husky hooks, and agent instructions from the repo root.</p>
-        </div>
-        <div>
-          <div class="text-amber font-mono text-xl mb-2">02</div>
-          <h3 class="font-semibold text-xl mb-2">Enforce</h3>
-          <p class="text-sm text-text-muted">Context-by-type rules validate Why/Approach/etc. Mechanical commits stay lightweight; decision-heavy commits stay explicit.</p>
-        </div>
-        <div>
-          <div class="text-amber font-mono text-xl mb-2">03</div>
-          <h3 class="font-semibold text-xl mb-2">Replay</h3>
-          <p class="text-sm text-text-muted">Commit history becomes searchable engineering memory, not just a changelog of file edits.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PR decision card section -->
-  <section class="px-6 py-20 border-t border-border">
-    <div class="max-w-6xl mx-auto">
-      <h2 class="text-2xl font-bold tracking-tight">Section 2 — GitHub PR / Actions / checks</h2>
-      <p class="mt-4 text-text-muted max-w-3xl">For teams using PRs as decision gates, Muselet can scaffold a Decision Card template and CI check workflow.</p>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <div class="text-amber font-mono text-xl mb-2">01</div>
-          <h3 class="font-semibold text-xl mb-2">Template</h3>
-          <p class="text-sm text-text-muted">Generate a PR Decision Card block with explicit sections: decision, why now, approach, alternatives, and tradeoffs.</p>
-        </div>
-        <div>
-          <div class="text-amber font-mono text-xl mb-2">02</div>
-          <h3 class="font-semibold text-xl mb-2">Automation</h3>
-          <p class="text-sm text-text-muted">When <code class="text-amber">gh</code> has write access, agents can update PR descriptions directly while preserving card markers.</p>
-        </div>
-        <div>
-          <div class="text-amber font-mono text-xl mb-2">03</div>
-          <h3 class="font-semibold text-xl mb-2">Merge gate</h3>
-          <p class="text-sm text-text-muted">Optional GitHub Action fails ready-for-review PRs if the Decision Card is missing, empty, or still marked draft.</p>
+          <div class="text-amber font-mono text-sm mb-3">In pull requests</div>
+          <h3 class="font-semibold text-xl mb-2">GitHub Decision Card + checks</h3>
+          <p class="text-sm text-text-muted">Adds a Decision Card template in PR descriptions and optional Actions checks for ready-for-review quality gates.</p>
+          <p class="mt-3 text-sm text-text-muted">Result: reviewers see the decision logic clearly before approving merge.</p>
         </div>
       </div>
     </div>
