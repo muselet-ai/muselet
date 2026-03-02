@@ -403,6 +403,27 @@ async function main() {
     note("You can enable PR Decision Cards later by re-running muselet init.", "PR Decision Card workflow");
   }
 
+  // Enforce Decision Card check (only if Decision Card is enabled)
+  let enforcePrDecisionCard = false;
+
+  if (enablePrDecisionCard) {
+    const enforcePrDecisionCardChoice = await select({
+      message: "Enforce Decision Card check before merge?\n  Blocks merge if Decision Card is missing or still marked as (Draft).",
+      options: [
+        { value: true, label: "Yes (recommended)" },
+        { value: false, label: "No (guidance only)" },
+      ],
+      initialValue: true,
+    });
+
+    if (isCancel(enforcePrDecisionCardChoice)) {
+      cancel("Setup cancelled.");
+      return;
+    }
+
+    enforcePrDecisionCard = enforcePrDecisionCardChoice;
+  }
+
   const installCommitlintWorkflowChoice = await select({
     message: "Install commit message linting in CI?",
     options: [
@@ -470,13 +491,15 @@ async function main() {
   }
 
   if (enablePrDecisionCard) {
-    if (hasPrDecisionWorkflow) {
-      plan.push("✓ .github/workflows/muselet-pr-check.yml exists (will overwrite)");
-    } else {
-      plan.push("Create .github/workflows/muselet-pr-check.yml");
-    }
     plan.push("Create .muselet/templates/decision-card.md");
-    plan.push(`PR Decision Card automation mode: ${ghStatus === "write" ? "auto-update via gh pr edit" : "manual copy/paste"}`);
+    plan.push(`PR Decision Card mode: ${ghStatus === "write" ? "auto-update via gh pr edit" : "manual copy/paste"}`);
+    if (enforcePrDecisionCard) {
+      if (hasPrDecisionWorkflow) {
+        plan.push("✓ .github/workflows/muselet-pr-check.yml exists (will overwrite)");
+      } else {
+        plan.push("Create .github/workflows/muselet-pr-check.yml");
+      }
+    }
   }
 
   plan.push("Create muselet.md");
@@ -565,12 +588,7 @@ async function main() {
 
     // 6. PR Decision Card workflow + template
     if (enablePrDecisionCard) {
-      s.start("Creating PR Decision Card workflow...");
-      const workflowDir = path.join(cwd, ".github", "workflows");
-      await fs.mkdir(workflowDir, { recursive: true });
-      await fs.writeFile(path.join(workflowDir, "muselet-pr-check.yml"), generatePrDecisionWorkflow());
-      s.stop("✅ PR Decision Card workflow created");
-
+      // Template always generated when Decision Card is enabled
       s.start("Creating PR Decision Card template...");
       const decisionCardTemplateDir = path.join(cwd, ".muselet", "templates");
       await fs.mkdir(decisionCardTemplateDir, { recursive: true });
@@ -588,6 +606,15 @@ async function main() {
 <!-- muselet:decision-card:end -->
 `);
       s.stop("✅ PR Decision Card template created");
+
+      // Check workflow only if enforcement is enabled
+      if (enforcePrDecisionCard) {
+        s.start("Creating PR Decision Card check workflow...");
+        const workflowDir = path.join(cwd, ".github", "workflows");
+        await fs.mkdir(workflowDir, { recursive: true });
+        await fs.writeFile(path.join(workflowDir, "muselet-pr-check.yml"), generatePrDecisionWorkflow());
+        s.stop("✅ PR Decision Card check workflow created");
+      }
     }
 
     // 7. Agent instructions (muselet.md)
