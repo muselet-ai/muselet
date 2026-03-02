@@ -46,8 +46,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@muselet/commitlint-plugin':
-        specifier: ^0.2.0
-        version: 0.2.0(@commitlint/cli@20.4.2(@types/node@25.3.0)(typescript@5.9.3))
+        specifier: workspace:*
+        version: link:../commitlint-plugin
       fs-extra:
         specifier: ^11.2.0
         version: 11.3.3
@@ -656,15 +656,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@muselet/commitlint-plugin@0.2.0':
-    resolution: {integrity: sha512-ZIl50hYHP8+8l7/J1E57sZcmpkvEmUOUw8bNhJgHWfQNto0zwmnxNigWZ+n8yCVR57IyrjFBMvVu5ns/KMN4XA==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@commitlint/cli': '>=17.0.0'
-    peerDependenciesMeta:
-      '@commitlint/cli':
-        optional: true
 
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
@@ -2987,10 +2978,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@muselet/commitlint-plugin@0.2.0(@commitlint/cli@20.4.2(@types/node@25.3.0)(typescript@5.9.3))':
-    optionalDependencies:
-      '@commitlint/cli': 20.4.2(@types/node@25.3.0)(typescript@5.9.3)
 
   '@oslojs/encoding@1.1.0': {}
 
