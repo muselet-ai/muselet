@@ -124,10 +124,22 @@ const lockFileNames: Record<PackageManager, string> = {
   npm: "package-lock.json",
 };
 
+function isMonorepo(): boolean {
+  if (existsSync(path.join(cwd, "pnpm-workspace.yaml"))) return true;
+  if (existsSync(path.join(cwd, "lerna.json"))) return true;
+  if (existsSync(path.join(cwd, "nx.json"))) return true;
+  try {
+    const pkg = JSON.parse(readFileSync(path.join(cwd, "package.json"), "utf-8"));
+    if (Array.isArray(pkg.workspaces) || pkg.workspaces?.packages) return true;
+  } catch {}
+  return false;
+}
+
 function installCmd(pm: PackageManager): string {
+  const mono = isMonorepo();
   switch (pm) {
-    case "pnpm": return "pnpm add -D";
-    case "yarn": return "yarn add -D";
+    case "pnpm": return mono ? "pnpm add -wD" : "pnpm add -D";
+    case "yarn": return mono ? "yarn add -WD" : "yarn add -D";
     case "npm": return "npm install -D";
   }
 }

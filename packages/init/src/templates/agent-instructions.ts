@@ -63,7 +63,7 @@ Maintain a Decision Card in the PR description using these markers:
 
 ${updateMode}
 
-Never remove `(Draft)` from the Decision Card heading. Human reviewers own finalization — they remove `(Draft)` when the card is ready.
+Never remove \`(Draft)\` from the Decision Card heading. Human reviewers own finalization — they remove \`(Draft)\` when the card is ready.
 
 ## Example (Tier 3)
 
