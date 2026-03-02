@@ -112,6 +112,7 @@ function openEditorForConfig(config: RuleValue): RuleValue {
 const cwd = process.cwd();
 
 type PackageManager = "pnpm" | "yarn" | "npm";
+type HumanFinalizationPolicy = "required" | "optional";
 
 function detectPackageManager(): PackageManager {
   if (existsSync(path.join(cwd, "pnpm-lock.yaml"))) return "pnpm";
@@ -168,6 +169,81 @@ jobs:
 `;
 }
 
+function generatePrDecisionWorkflow(humanFinalization: HumanFinalizationPolicy): string {
+  const draftCheck = humanFinalization === "required"
+    ? "\nif echo \"$CARD\" | grep -q \"(Draft)\"; then\n  echo \"❌ Decision Card is still marked as (Draft). Human finalization is required before merge.\"\n  exit 1\nfi"
+    : "";
+
+  return `name: Muselet PR Decision Card Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+
+jobs:
+  decision-card:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Decision Card in PR description
+        env:
+          PR_BODY: \${{ github.event.pull_request.body || '' }}
+          PR_DRAFT: \${{ github.event.pull_request.draft }}
+        shell: bash
+        run: |
+          START='<!-- muselet:decision-card:start -->'
+          END='<!-- muselet:decision-card:end -->'
+
+          if [ "\$PR_DRAFT" = "true" ]; then
+            echo "ℹ️ PR is still draft; Decision Card can remain draft or pending."
+            exit 0
+          fi
+
+          if ! grep -Fq "$START" <<< "\$PR_BODY" || ! grep -Fq "$END" <<< "\$PR_BODY"; then
+            echo "❌ Missing Decision Card block in PR description."
+            echo "Expected markers: $START ... $END"
+            exit 1
+          fi
+
+          CARD=$(awk '/<!-- muselet:decision-card:start -->/{flag=1;next}/<!-- muselet:decision-card:end -->/{flag=0}flag' <<< "\$PR_BODY")
+
+          if [ -z "\$CARD" ]; then
+            echo "❌ Decision Card block is empty."
+            exit 1
+          fi\${draftCheck}
+
+          echo "✅ Decision Card check passed."
+`;
+}
+
+function detectGhStatus(): "no-gh" | "no-write" | "write" {
+  const auth = spawnSync("gh", ["auth", "status"], { cwd, stdio: "ignore" });
+  if (auth.error || auth.status !== 0) {
+    return "no-gh";
+  }
+
+  const repo = spawnSync("gh", ["repo", "view", "--json", "viewerPermission"], {
+    cwd,
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "ignore"],
+  });
+
+  if (repo.error || repo.status !== 0 || !repo.stdout) {
+    return "no-write";
+  }
+
+  try {
+    const parsed = JSON.parse(repo.stdout) as { viewerPermission?: string };
+    const permission = parsed.viewerPermission;
+    if (permission === "WRITE" || permission === "MAINTAIN" || permission === "ADMIN") {
+      return "write";
+    }
+  } catch {
+    return "no-write";
+  }
+
+  return "no-write";
+}
+
 function run(cmd: string): void {
   log.step(`$ ${cmd}`);
   execSync(cmd, { cwd, stdio: "inherit" });
@@ -211,7 +287,8 @@ async function main() {
     existsSync(path.join(cwd, "commitlint.config.mjs")) ||
     existsSync(path.join(cwd, ".commitlintrc.json"));
   const hasHusky = existsSync(path.join(cwd, ".husky"));
-  const hasWorkflow = existsSync(path.join(cwd, ".github", "workflows", "muselet.yml"));
+  const hasCommitlintWorkflow = existsSync(path.join(cwd, ".github", "workflows", "muselet.yml"));
+  const hasPrDecisionWorkflow = existsSync(path.join(cwd, ".github", "workflows", "muselet-pr-check.yml"));
   const agentFiles = detectAgentFiles();
 
   // ── 2. Package manager confirmation ───────────────────────────────
@@ -272,22 +349,69 @@ async function main() {
 
   // ── 4. Per-item confirmations for optional steps ──────────────────
 
-  // GitHub Action
-  const installWorkflowChoice = await select({
-    message: "Install the Muselet GitHub Action?\n  Lints commit messages on every PR — useful if your team uses GitHub.",
+  const enablePrDecisionCardChoice = await select({
+    message: "Enable GitHub PR Decision Card workflow?",
     options: [
       { value: true, label: "Yes" },
       { value: false, label: "No" },
     ],
-    initialValue: !hasWorkflow,
+    initialValue: !hasPrDecisionWorkflow,
   });
 
-  if (isCancel(installWorkflowChoice)) {
+  if (isCancel(enablePrDecisionCardChoice)) {
     cancel("Setup cancelled.");
     return;
   }
 
-  const installWorkflow: boolean = installWorkflowChoice;
+  const enablePrDecisionCard: boolean = enablePrDecisionCardChoice;
+  let ghStatus: "no-gh" | "no-write" | "write" = "no-gh";
+  let humanFinalizationPolicy: HumanFinalizationPolicy = "required";
+
+  if (enablePrDecisionCard) {
+    ghStatus = detectGhStatus();
+
+    if (ghStatus === "write") {
+      note("✓ gh CLI authenticated with write access. Agents will auto-update PR descriptions.", "GitHub CLI status");
+    } else if (ghStatus === "no-write") {
+      note("⚠ gh CLI authenticated but no write access. Agents will generate Decision Card markdown for manual copy/paste.", "GitHub CLI status");
+    } else {
+      note("ℹ gh CLI not found. Agents will generate Decision Card markdown for manual copy/paste.", "GitHub CLI status");
+    }
+
+    const humanFinalizationChoice = await select({
+      message: "Require human finalization before merge? (recommended)",
+      options: [
+        { value: "required" as const, label: "Yes (recommended)" },
+        { value: "optional" as const, label: "No" },
+      ],
+      initialValue: "required" as const,
+    });
+
+    if (isCancel(humanFinalizationChoice)) {
+      cancel("Setup cancelled.");
+      return;
+    }
+
+    humanFinalizationPolicy = humanFinalizationChoice;
+  } else {
+    note("You can enable PR Decision Cards later by re-running muselet init.", "PR Decision Card workflow");
+  }
+
+  const installCommitlintWorkflowChoice = await select({
+    message: "Install commit message linting in CI?",
+    options: [
+      { value: true, label: "Yes" },
+      { value: false, label: "No" },
+    ],
+    initialValue: !hasCommitlintWorkflow,
+  });
+
+  if (isCancel(installCommitlintWorkflowChoice)) {
+    cancel("Setup cancelled.");
+    return;
+  }
+
+  const installCommitlintWorkflow: boolean = installCommitlintWorkflowChoice;
 
   // Agent instruction files
   const agentFilesToPatch: string[] = [];
@@ -331,12 +455,23 @@ async function main() {
     plan.push("Create commitlint.config.mjs");
   }
 
-  if (installWorkflow) {
-    if (hasWorkflow) {
+  if (installCommitlintWorkflow) {
+    if (hasCommitlintWorkflow) {
       plan.push("✓ .github/workflows/muselet.yml exists (will overwrite)");
     } else {
       plan.push("Create .github/workflows/muselet.yml");
     }
+  }
+
+  if (enablePrDecisionCard) {
+    if (hasPrDecisionWorkflow) {
+      plan.push("✓ .github/workflows/muselet-pr-check.yml exists (will overwrite)");
+    } else {
+      plan.push("Create .github/workflows/muselet-pr-check.yml");
+    }
+    plan.push("Create .muselet/templates/decision-card.md");
+    plan.push(`PR Decision Card automation mode: ${ghStatus === "write" ? "auto-update via gh pr edit" : "manual copy/paste"}`);
+    plan.push(`Human finalization before merge: ${humanFinalizationPolicy === "required" ? "required" : "not required"}`);
   }
 
   plan.push("Create muselet.md");
@@ -414,21 +549,51 @@ async function main() {
       }
     }
 
-    // 5. GitHub Action workflow
-    if (installWorkflow) {
-      s.start("Creating GitHub workflow...");
+    // 5. Commitlint CI workflow
+    if (installCommitlintWorkflow) {
+      s.start("Creating commitlint CI workflow...");
       const workflowDir = path.join(cwd, ".github", "workflows");
       await fs.mkdir(workflowDir, { recursive: true });
       await fs.writeFile(path.join(workflowDir, "muselet.yml"), generateWorkflow(pm));
-      s.stop("✅ GitHub workflow created");
+      s.stop("✅ Commitlint CI workflow created");
     }
 
-    // 6. Agent instructions (muselet.md)
+    // 6. PR Decision Card workflow + template
+    if (enablePrDecisionCard) {
+      s.start("Creating PR Decision Card workflow...");
+      const workflowDir = path.join(cwd, ".github", "workflows");
+      await fs.mkdir(workflowDir, { recursive: true });
+      await fs.writeFile(path.join(workflowDir, "muselet-pr-check.yml"), generatePrDecisionWorkflow(humanFinalizationPolicy));
+      s.stop("✅ PR Decision Card workflow created");
+
+      s.start("Creating PR Decision Card template...");
+      const decisionCardTemplateDir = path.join(cwd, ".muselet", "templates");
+      await fs.mkdir(decisionCardTemplateDir, { recursive: true });
+      await fs.writeFile(path.join(decisionCardTemplateDir, "decision-card.md"), `<!-- muselet:decision-card:start -->
+### Decision
+(Draft)
+
+### Why now
+
+### Approach
+
+### Alternatives considered
+
+### Tradeoffs / Risks
+<!-- muselet:decision-card:end -->
+`);
+      s.stop("✅ PR Decision Card template created");
+    }
+
+    // 7. Agent instructions (muselet.md)
     s.start("Creating agent instructions...");
-    await fs.writeFile(path.join(cwd, "muselet.md"), agentInstructions);
+    await fs.writeFile(
+      path.join(cwd, "muselet.md"),
+      agentInstructions(ghStatus === "write" ? "auto" : "manual", humanFinalizationPolicy),
+    );
     s.stop("✅ Agent instructions created");
 
-    // 7. Patch agent instruction files
+    // 8. Patch agent instruction files
     for (const file of agentFilesToPatch) {
       const filePath = path.join(cwd, file);
       s.start(`Patching ${file}...`);
