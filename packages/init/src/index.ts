@@ -125,9 +125,14 @@ const lockFileNames: Record<PackageManager, string> = {
 };
 
 function isMonorepo(): boolean {
-  return existsSync(path.join(cwd, "pnpm-workspace.yaml")) ||
-    existsSync(path.join(cwd, "lerna.json")) ||
-    existsSync(path.join(cwd, "nx.json"));
+  if (existsSync(path.join(cwd, "pnpm-workspace.yaml"))) return true;
+  if (existsSync(path.join(cwd, "lerna.json"))) return true;
+  if (existsSync(path.join(cwd, "nx.json"))) return true;
+  try {
+    const pkg = JSON.parse(readFileSync(path.join(cwd, "package.json"), "utf-8"));
+    if (Array.isArray(pkg.workspaces) || pkg.workspaces?.packages) return true;
+  } catch {}
+  return false;
 }
 
 function installCmd(pm: PackageManager): string {
