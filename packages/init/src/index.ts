@@ -373,9 +373,23 @@ async function main() {
     if (ghStatus === "write") {
       note("✓ gh CLI authenticated with write access. Agents will auto-update PR descriptions.", "GitHub CLI status");
     } else if (ghStatus === "no-write") {
-      note("⚠ gh CLI authenticated but no write access. Agents will generate Decision Card markdown for manual copy/paste.", "GitHub CLI status");
+      note(
+        "\u26a0\ufe0f gh CLI authenticated but no write access to this repo.\n" +
+        "  Agents will generate Decision Card markdown for manual copy/paste.\n\n" +
+        "  To fix: ask a repo admin to grant you Write access, or fork the repo.\n" +
+        "  Then re-run: npx @muselet/init",
+        "GitHub CLI status"
+      );
     } else {
-      note("ℹ gh CLI not found. Agents will generate Decision Card markdown for manual copy/paste.", "GitHub CLI status");
+      note(
+        "\u2139\ufe0f gh CLI not found or not authenticated.\n" +
+        "  Agents will generate Decision Card markdown for manual copy/paste.\n\n" +
+        "  To fix:\n" +
+        "  1. Install: https://cli.github.com\n" +
+        "  2. Authenticate: gh auth login\n" +
+        "  3. Re-run: npx @muselet/init",
+        "GitHub CLI status"
+      );
     }
 
     const humanFinalizationChoice = await select({
