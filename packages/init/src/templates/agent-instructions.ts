@@ -1,17 +1,11 @@
 type PrDecisionCardMode = "auto" | "manual";
-type HumanFinalizationPolicy = "required" | "optional";
 
 export function agentInstructions(
   decisionCardMode: PrDecisionCardMode,
-  humanFinalizationPolicy: HumanFinalizationPolicy,
 ): string {
   const updateMode = decisionCardMode === "auto"
     ? "If gh CLI is available with write access, update the PR description directly using `gh pr edit --body-file` and preserve the Decision Card markers."
     : "If gh CLI is unavailable or lacks write access, generate Decision Card markdown for the human to copy/paste into the PR description, preserving the markers.";
-
-  const humanFinalizationRule = humanFinalizationPolicy === "required"
-    ? "Never remove `(Draft)` from the Decision section. Human reviewers own finalization and remove `(Draft)` when ready."
-    : "Never remove `(Draft)` yourself. A human reviewer decides when and whether to remove it.";
 
   return `# Commit Message Convention (muselet)
 
@@ -69,7 +63,7 @@ Maintain a Decision Card in the PR description using these markers:
 
 ${updateMode}
 
-${humanFinalizationRule}
+Never remove `(Draft)` from the Decision Card heading. Human reviewers own finalization — they remove `(Draft)` when the card is ready.
 
 ## Example (Tier 3)
 

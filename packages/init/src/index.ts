@@ -112,8 +112,6 @@ function openEditorForConfig(config: RuleValue): RuleValue {
 const cwd = process.cwd();
 
 type PackageManager = "pnpm" | "yarn" | "npm";
-type HumanFinalizationPolicy = "required" | "optional";
-
 function detectPackageManager(): PackageManager {
   if (existsSync(path.join(cwd, "pnpm-lock.yaml"))) return "pnpm";
   if (existsSync(path.join(cwd, "yarn.lock"))) return "yarn";
@@ -169,10 +167,7 @@ jobs:
 `;
 }
 
-function generatePrDecisionWorkflow(humanFinalization: HumanFinalizationPolicy): string {
-  const draftCheck = humanFinalization === "required"
-    ? "\nif echo \"$CARD\" | grep -q \"(Draft)\"; then\n  echo \"❌ Decision Card is still marked as (Draft). Human finalization is required before merge.\"\n  exit 1\nfi"
-    : "";
+function generatePrDecisionWorkflow(): string {
 
   return `name: Muselet PR Decision Card Check
 
@@ -209,7 +204,12 @@ jobs:
           if [ -z "\$CARD" ]; then
             echo "❌ Decision Card block is empty."
             exit 1
-          fi\${draftCheck}
+          fi\
+
+          if echo "$CARD" | grep -q "(Draft)"; then
+            echo "❌ Decision Card is still marked as (Draft). Remove (Draft) from the heading to finalize."
+            exit 1
+          fi
 
           echo "✅ Decision Card check passed."
 `;
@@ -365,7 +365,6 @@ async function main() {
 
   const enablePrDecisionCard: boolean = enablePrDecisionCardChoice;
   let ghStatus: "no-gh" | "no-write" | "write" = "no-gh";
-  let humanFinalizationPolicy: HumanFinalizationPolicy = "required";
 
   if (enablePrDecisionCard) {
     ghStatus = detectGhStatus();
@@ -400,21 +399,6 @@ async function main() {
       );
     }
 
-    const humanFinalizationChoice = await select({
-      message: "Require human finalization before merge? (recommended)",
-      options: [
-        { value: "required" as const, label: "Yes (recommended)" },
-        { value: "optional" as const, label: "No" },
-      ],
-      initialValue: "required" as const,
-    });
-
-    if (isCancel(humanFinalizationChoice)) {
-      cancel("Setup cancelled.");
-      return;
-    }
-
-    humanFinalizationPolicy = humanFinalizationChoice;
   } else {
     note("You can enable PR Decision Cards later by re-running muselet init.", "PR Decision Card workflow");
   }
@@ -493,7 +477,6 @@ async function main() {
     }
     plan.push("Create .muselet/templates/decision-card.md");
     plan.push(`PR Decision Card automation mode: ${ghStatus === "write" ? "auto-update via gh pr edit" : "manual copy/paste"}`);
-    plan.push(`Human finalization before merge: ${humanFinalizationPolicy === "required" ? "required" : "not required"}`);
   }
 
   plan.push("Create muselet.md");
@@ -585,7 +568,7 @@ async function main() {
       s.start("Creating PR Decision Card workflow...");
       const workflowDir = path.join(cwd, ".github", "workflows");
       await fs.mkdir(workflowDir, { recursive: true });
-      await fs.writeFile(path.join(workflowDir, "muselet-pr-check.yml"), generatePrDecisionWorkflow(humanFinalizationPolicy));
+      await fs.writeFile(path.join(workflowDir, "muselet-pr-check.yml"), generatePrDecisionWorkflow());
       s.stop("✅ PR Decision Card workflow created");
 
       s.start("Creating PR Decision Card template...");
@@ -611,7 +594,7 @@ async function main() {
     s.start("Creating agent instructions...");
     await fs.writeFile(
       path.join(cwd, "muselet.md"),
-      agentInstructions(ghStatus === "write" ? "auto" : "manual", humanFinalizationPolicy),
+      agentInstructions(ghStatus === "write" ? "auto" : "manual"),
     );
     s.stop("✅ Agent instructions created");
 
