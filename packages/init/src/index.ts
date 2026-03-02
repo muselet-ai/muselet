@@ -211,9 +211,9 @@ jobs:
           if [ -z "\$CARD" ]; then
             echo "❌ Decision Card block is empty."
             exit 1
-          fi\
+          fi
 
-          if echo "$CARD" | grep -q "(Draft)"; then
+          if echo "$CARD" | grep -Eq '^[[:space:]]*\(Draft\)[[:space:]]*$'; then
             echo "❌ Decision Card is still marked as (Draft). Remove (Draft) from the heading to finalize."
             exit 1
           fi
