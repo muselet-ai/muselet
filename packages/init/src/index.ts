@@ -215,7 +215,7 @@ jobs:
 `;
 }
 
-function detectGhStatus(): "no-gh" | "no-write" | "write" {
+function detectGhStatus(): "no-gh" | "no-repo" | "no-write" | "write" {
   const auth = spawnSync("gh", ["auth", "status"], { cwd, stdio: "ignore" });
   if (auth.error || auth.status !== 0) {
     return "no-gh";
@@ -224,11 +224,11 @@ function detectGhStatus(): "no-gh" | "no-write" | "write" {
   const repo = spawnSync("gh", ["repo", "view", "--json", "viewerPermission"], {
     cwd,
     encoding: "utf-8",
-    stdio: ["ignore", "pipe", "ignore"],
+    stdio: ["ignore", "pipe", "pipe"],
   });
 
   if (repo.error || repo.status !== 0 || !repo.stdout) {
-    return "no-write";
+    return "no-repo";
   }
 
   try {
@@ -238,7 +238,7 @@ function detectGhStatus(): "no-gh" | "no-write" | "write" {
       return "write";
     }
   } catch {
-    return "no-write";
+    return "no-repo";
   }
 
   return "no-write";
@@ -377,6 +377,14 @@ async function main() {
         "\u26a0\ufe0f gh CLI authenticated but no write access to this repo.\n" +
         "  Agents will generate Decision Card markdown for manual copy/paste.\n\n" +
         "  To fix: ask a repo admin to grant you Write access, or fork the repo.\n" +
+        "  Then re-run: npx @muselet/init",
+        "GitHub CLI status"
+      );
+    } else if (ghStatus === "no-repo") {
+      note(
+        "\u2139\ufe0f No GitHub repository detected in this directory.\n" +
+        "  Agents will generate Decision Card markdown for manual copy/paste.\n\n" +
+        "  To fix: run muse init from inside a cloned GitHub repo.\n" +
         "  Then re-run: npx @muselet/init",
         "GitHub CLI status"
       );
