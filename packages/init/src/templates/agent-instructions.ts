@@ -1,4 +1,13 @@
-export const agentInstructions = `# Commit Message Convention (muselet)
+type PrDecisionCardMode = "auto" | "manual";
+
+export function agentInstructions(
+  decisionCardMode: PrDecisionCardMode,
+): string {
+  const updateMode = decisionCardMode === "auto"
+    ? "If gh CLI is available with write access, update the PR description directly using `gh pr edit --body-file` and preserve the Decision Card markers."
+    : "If gh CLI is unavailable or lacks write access, generate Decision Card markdown for the human to copy/paste into the PR description, preserving the markers.";
+
+  return `# Commit Message Convention (muselet)
 
 Think of each commit as a **replayable migration** — not just of code, but of decisions.
 A future agent should be able to read your commit messages (without diffs) and reproduce
@@ -16,7 +25,7 @@ tier that applies and only scale down when there's genuinely nothing more to say
 
 ## Sections by Type
 
-Use markdown headers (\\\`### Section\\\`) in the commit body. See examples below.
+Use markdown headers (\`### Section\`) in the commit body. See examples below.
 
 ### fix
 - **Required:** Why (what was broken and why)
@@ -45,9 +54,20 @@ Use markdown headers (\\\`### Section\\\`) in the commit body. See examples belo
 ### style
 - No body needed. The diff is the message.
 
+## GitHub PR Decision Card
+
+Maintain a Decision Card in the PR description using these markers:
+
+- \`<!-- muselet:decision-card:start -->\`
+- \`<!-- muselet:decision-card:end -->\`
+
+${updateMode}
+
+Never remove \`(Draft)\` from the Decision Card heading. Human reviewers own finalization — they remove \`(Draft)\` when the card is ready.
+
 ## Example (Tier 3)
 
-\\\`\\\`\\\`
+\`\`\`
 fix: resolve race condition in WebSocket reconnect
 
 ### Why
@@ -62,17 +82,17 @@ the 3s reconnect window.
 ### Approach
 Added a connection-id check — message handlers ignore events from
 connections that aren't the current active one.
-\\\`\\\`\\\`
+\`\`\`
 
 ## Example (Tier 1)
 
-\\\`\\\`\\\`
+\`\`\`
 feat(cli): add --json flag for machine-readable output
 
 ### Why
 CI pipelines need to parse muselet output programmatically.
 Shell-parsing human-readable tables is fragile.
-\\\`\\\`\\\`
+\`\`\`
 
 ## The Replay Test
 
@@ -81,13 +101,14 @@ reproduce the decision in a different codebase?* If not, add more context.
 
 ## Config
 
-This project's \\\`commitlint.config.mjs\\\` extends \\\`@commitlint/config-conventional\\\`,
-which enforces standard rules like \\\`body-max-line-length\\\` (100 chars). If your context
+This project's \`commitlint.config.mjs\` extends \`@commitlint/config-conventional\`,
+which enforces standard rules like \`body-max-line-length\` (100 chars). If your context
 sections need longer lines, you can override it:
 
-\\\`\\\`\\\`js
+\`\`\`js
 rules: {
   "body-max-line-length": [0], // disable
 }
-\\\`\\\`\\\`
+\`\`\`
 `;
+}
