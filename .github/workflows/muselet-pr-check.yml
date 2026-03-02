@@ -1,0 +1,42 @@
+name: Muselet PR Decision Card Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+
+jobs:
+  decision-card:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Decision Card in PR description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+        shell: bash
+        run: |
+          START='<!-- muselet:decision-card:start -->'
+          END='<!-- muselet:decision-card:end -->'
+
+          if [ "$PR_DRAFT" = "true" ]; then
+            echo "ℹ️ PR is still draft; Decision Card can remain draft or pending."
+            exit 0
+          fi
+
+          if ! grep -Fq "$START" <<< "$PR_BODY" || ! grep -Fq "$END" <<< "$PR_BODY"; then
+            echo "❌ Missing Decision Card block in PR description."
+            echo "Expected markers: $START ... $END"
+            exit 1
+          fi
+
+          CARD=$(awk '/<!-- muselet:decision-card:start -->/{flag=1;next}/<!-- muselet:decision-card:end -->/{flag=0}flag' <<< "$PR_BODY")
+
+          if [ -z "$CARD" ]; then
+            echo "❌ Decision Card block is empty."
+            exit 1
+          fi
+          if echo "$CARD" | grep -q "(Draft)"; then
+            echo "❌ Decision Card is still marked as (Draft). Remove (Draft) from the heading to finalize."
+            exit 1
+          fi
+
+          echo "✅ Decision Card check passed."
