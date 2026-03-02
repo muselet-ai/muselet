@@ -11,10 +11,10 @@ import StatCard from '../components/StatCard.astro';
       <!-- Left: text + CTA -->
       <div>
         <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-          Every commit is an <span class="text-amber">Architecture Decision Record.</span>
+          Muselet is your <span class="text-amber">decision capture toolkit.</span>
         </h1>
         <p class="mt-6 text-lg text-text-muted leading-relaxed">
-          Muselet is a commitlint plugin that enforces structured context sections in commit messages — why, approach, alternatives, tradeoffs — so every decision is captured where it happened.
+          Muselet helps teams preserve engineering decisions across commits and pull requests. One setup command gives you two features: structured commit context with commitlint, and GitHub PR Decision Card checks before merge.
         </p>
         <div class="mt-10 flex flex-col md:flex-row  items-center gap-4">
           <code class="px-4 py-3 bg-surface border border-border rounded-lg font-mono text-sm text-amber">npx @muselet/init</code>
@@ -51,25 +51,71 @@ import StatCard from '../components/StatCard.astro';
     </div>
   </section>
 
-  <!-- How it works -->
+  <!-- Product framing -->
   <section class="px-6 py-20 border-t border-border">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-2xl font-bold tracking-tight">How it works</h2>
-      <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <h2 class="text-2xl font-bold tracking-tight">One tool. Two features.</h2>
+      <p class="mt-4 text-text-muted max-w-3xl">Run <code class="text-amber">npx @muselet/init</code> once. Keep decisions visible at both layers: commit history and PR discussion.</p>
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="rounded-xl border border-border bg-surface p-6">
+          <div class="text-amber font-mono text-sm mb-3">Feature 01</div>
+          <h3 class="font-semibold text-xl mb-2">Commitlint context plugin</h3>
+          <p class="text-sm text-text-muted">Enforce structured commit sections by type (Why, Approach, Alternatives, etc.) so every commit carries replayable intent.</p>
+        </div>
+        <div class="rounded-xl border border-border bg-surface p-6">
+          <div class="text-amber font-mono text-sm mb-3">Feature 02</div>
+          <h3 class="font-semibold text-xl mb-2">GitHub PR Decision Card checks</h3>
+          <p class="text-sm text-text-muted">Add a Decision Card template in PR descriptions and optionally block merge when it is missing or still draft.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commitlint section -->
+  <section class="px-6 py-20 border-t border-border">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tight">Section 1 — Commitlint plugin</h2>
+      <p class="mt-4 text-text-muted max-w-3xl">Muselet adds commit rules that work with humans and coding agents. If context is missing, commits fail fast with actionable feedback.</p>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <div class="text-amber font-mono text-xl mb-2">01</div>
-          <h3 class="font-semibold text-xl  mb-2">Install</h3>
-          <p class="text-sm text-text-muted"><code class="text-amber">npx @muselet/init</code> scaffolds commitlint config, husky hook, and agent instructions.</p>
+          <h3 class="font-semibold text-xl mb-2">Install</h3>
+          <p class="text-sm text-text-muted">Scaffold commitlint config, husky hooks, and agent instructions from the repo root.</p>
         </div>
         <div>
           <div class="text-amber font-mono text-xl mb-2">02</div>
-          <h3 class="font-semibold text-xl mb-2">Lint</h3>
-          <p class="text-sm text-text-muted">Agent hits lint error → reads convention → writes proper message with context sections.</p>
+          <h3 class="font-semibold text-xl mb-2">Enforce</h3>
+          <p class="text-sm text-text-muted">Context-by-type rules validate Why/Approach/etc. Mechanical commits stay lightweight; decision-heavy commits stay explicit.</p>
         </div>
         <div>
           <div class="text-amber font-mono text-xl mb-2">03</div>
           <h3 class="font-semibold text-xl mb-2">Replay</h3>
-          <p class="text-sm text-text-muted">Every commit becomes a replayable decision record. Context preserved forever.</p>
+          <p class="text-sm text-text-muted">Commit history becomes searchable engineering memory, not just a changelog of file edits.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PR decision card section -->
+  <section class="px-6 py-20 border-t border-border">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tight">Section 2 — GitHub PR / Actions / checks</h2>
+      <p class="mt-4 text-text-muted max-w-3xl">For teams using PRs as decision gates, Muselet can scaffold a Decision Card template and CI check workflow.</p>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <div class="text-amber font-mono text-xl mb-2">01</div>
+          <h3 class="font-semibold text-xl mb-2">Template</h3>
+          <p class="text-sm text-text-muted">Generate a PR Decision Card block with explicit sections: decision, why now, approach, alternatives, and tradeoffs.</p>
+        </div>
+        <div>
+          <div class="text-amber font-mono text-xl mb-2">02</div>
+          <h3 class="font-semibold text-xl mb-2">Automation</h3>
+          <p class="text-sm text-text-muted">When <code class="text-amber">gh</code> has write access, agents can update PR descriptions directly while preserving card markers.</p>
+        </div>
+        <div>
+          <div class="text-amber font-mono text-xl mb-2">03</div>
+          <h3 class="font-semibold text-xl mb-2">Merge gate</h3>
+          <p class="text-sm text-text-muted">Optional GitHub Action fails ready-for-review PRs if the Decision Card is missing, empty, or still marked draft.</p>
         </div>
       </div>
     </div>
